@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "395035798445",
+    "project_id": "qrcode-7674d",
+    "storage_bucket": "qrcode-7674d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:395035798445:android:c3480d01880c397d330f24",
+        "android_client_info": {
+          "package_name": "com.example.attendanceviaqr"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "395035798445-gt1a3hcd596uvidf266ou0clp9e3bioh.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.attendanceviaqr",
+            "certificate_hash": "41c1714c72a8064108a66fbb84f7ac28178aba4f"
+          }
+        },
+        {
+          "client_id": "395035798445-tcr7b3sd45vie2viu5gdvbt79guvg20d.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD4rVAnZwr2rnY6uqo8CXEeQk-Q6eHg8Bs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "395035798445-tcr7b3sd45vie2viu5gdvbt79guvg20d.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
