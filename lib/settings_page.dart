@@ -1,6 +1,8 @@
+import 'package:attendanceviaqr/blocs/theme/theme_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'services/auth_services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({Key key}) : super(key: key);
@@ -47,6 +49,7 @@ class _SettingsPageState extends State<SettingsPage> {
              child: SwitchListTile(title: Text("Dark Mode"), value: switchState, onChanged: (value){
                setState(() {
                  switchState=value;
+                 BlocProvider.of<ThemeBloc>(context).add(ChangeThemeEvent(switchState: switchState));
                });
              },),
            ),

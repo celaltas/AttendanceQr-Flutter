@@ -1,16 +1,20 @@
+import 'package:attendanceviaqr/blocs/theme/theme_bloc.dart';
 import 'package:attendanceviaqr/services/auth_services.dart';
 import 'package:attendanceviaqr/services/firestore_service.dart';
 import 'package:attendanceviaqr/sign_in_page.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 
-void main() async{
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  runApp(App());
+  runApp(BlocProvider<ThemeBloc>(
+    create: (context) => ThemeBloc( ThemeInitial(theme: ThemeData.light(), color: Colors.blue)),
+    child: App(),
+  ));
   await Firebase.initializeApp();
-
 }
 
 class App extends StatelessWidget {
@@ -39,6 +43,7 @@ class App extends StatelessWidget {
     );
   }
 }
+
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -47,13 +52,14 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => AuthService(),),
         ChangeNotifierProvider(create: (_) => FireStoreService(),)
       ],
-      child: MaterialApp(
-        title: "Attendance via QR Code",
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-            primarySwatch: Colors.blue
+      child: BlocBuilder(
+        bloc: BlocProvider.of<ThemeBloc>(context),
+        builder: (context, ThemeState state)=> MaterialApp(
+          title: "Attendance via QR Code",
+          debugShowCheckedModeBanner: false,
+          theme: (state as ThemeInitial).theme,
+          home: SignInPage(),
         ),
-        home: SignInPage(),
       ),
     );
   }
