@@ -1,10 +1,11 @@
 import 'package:attendanceviaqr/models/local_user.dart';
+import 'package:attendanceviaqr/services/auth_services.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:provider/provider.dart';
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({Key key}) : super(key: key);
@@ -19,14 +20,21 @@ class _SignUpPageState extends State<SignUpPage> {
   bool autoControl = false;
   File chosenImage;
   final picker = ImagePicker();
-  final _controller = TextEditingController();
 
 
-  final FirebaseAuth _auth = FirebaseAuth.instance;
+
+
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   @override
   Widget build(BuildContext context) {
+    final auth = Provider.of<AuthService>(context);
+
+
+
+
+
+
     return Scaffold(
       appBar: AppBar(
         title: Text("Sign Up"),
@@ -34,9 +42,12 @@ class _SignUpPageState extends State<SignUpPage> {
       ),
       backgroundColor: Colors.grey.shade300,
       resizeToAvoidBottomInset: false,
-      floatingActionButton: FloatingActionButton(child: Icon(Icons.create), onPressed: (){
+      floatingActionButton: FloatingActionButton(child: Icon(Icons.create), onPressed: () async {
         if(_controlForm() == true){
-          _createUser();
+          //_createUser();
+          await auth.createUserWithEmailandPassword(_eMail, _password);
+          formKey.currentState.reset();
+          Navigator.pop(context);
         }
 
 
@@ -232,12 +243,14 @@ class _SignUpPageState extends State<SignUpPage> {
 
   }
 
+  /*
+
   void _createUser() async{
     try{
       UserCredential _credential =  await _auth.createUserWithEmailAndPassword(email: _eMail, password: _password);
-      _registerUserFirestore();
+      //_registerUserFirestore();
       formKey.currentState.reset();
-      Navigator.pop(context);
+      //Navigator.pop(context);
     }catch(e){
       var flushbar = Flushbar(
         icon: Icon(Icons.check_circle),
@@ -253,6 +266,8 @@ class _SignUpPageState extends State<SignUpPage> {
     }
 
   }
+
+
 
   void _registerUserFirestore() async{
     try{
@@ -289,6 +304,8 @@ class _SignUpPageState extends State<SignUpPage> {
 
     
   }
+   */
+
 
 
 }

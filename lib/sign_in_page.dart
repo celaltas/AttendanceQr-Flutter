@@ -1,13 +1,23 @@
 import 'package:attendanceviaqr/sign_up_page.dart';
 import 'package:flutter/material.dart';
-
+import 'package:provider/provider.dart';
 import 'landing_page.dart';
+import 'services/auth_services.dart';
 
-class SignInPage extends StatelessWidget {
-  const SignInPage({Key key}) : super(key: key);
+class SignInPage extends StatefulWidget {
+  @override
+  _SignInPageState createState() => _SignInPageState();
+}
+
+class _SignInPageState extends State<SignInPage> {
+  String _eMail, _password;
+
+  final formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
+    final auth = Provider.of<AuthService>(context);
+
     return Scaffold(
       appBar: AppBar(
         title: Text("Attendance via QR Code"),
@@ -36,6 +46,7 @@ class SignInPage extends StatelessWidget {
                 height: 12,
               ),
               Form(
+                key: formKey,
                   child: Padding(
                 padding: EdgeInsets.symmetric(horizontal: 18, vertical: 40),
                 child: Column(
@@ -52,6 +63,9 @@ class SignInPage extends StatelessWidget {
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(15.0),
                           )),
+                      onSaved: (value){
+                        _eMail=value;
+                      },
                     ),
                     SizedBox(
                       height: 8,
@@ -68,6 +82,9 @@ class SignInPage extends StatelessWidget {
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(15.0),
                           )),
+                      onSaved: (value){
+                        _password=value;
+                      },
                     ),
                   ],
                 ),
@@ -75,8 +92,11 @@ class SignInPage extends StatelessWidget {
               ConstrainedBox(
                 constraints: BoxConstraints.tightFor(width: 350, height: 50),
                 child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (context)=>LandingPage()));
+                  onPressed: () async {
+                    formKey.currentState.save();
+                    await auth.signUserWithEmailandPassword(_eMail, _password);
+                    formKey.currentState.reset();
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => LandingPage()));
                   },
                   child: Text(
                     "Sign in",

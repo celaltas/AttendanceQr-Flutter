@@ -13,6 +13,8 @@ class AuthService with ChangeNotifier{
   UserState _userState = UserState.SessionNotCreated;
 
 
+
+
   UserState get userState => _userState;
 
   set userState(UserState value) {
@@ -23,6 +25,18 @@ class AuthService with ChangeNotifier{
   AuthService(){
     _auth.authStateChanges().listen(_authStateChanged);
   }
+
+
+  Future<User> getCurrentUser()  async{
+    try {
+      User user =  _auth.currentUser;
+      return user;
+    } catch (e) {
+      print("Current user error: " + e.toString());
+      return null;
+    }
+  }
+
 
   void _authStateChanged(User user){
       if( user ==null){
@@ -44,8 +58,9 @@ class AuthService with ChangeNotifier{
 
   }
   Future<User> signUserWithEmailandPassword(String email, String password)async{
-    userState = UserState.SessionIsCreating;
+
     try {
+      userState = UserState.SessionIsCreating;
       userState = UserState.SessionCreated;
       UserCredential _credential = await _auth.signInWithEmailAndPassword(email: email, password: password);
       User currentUser = _credential.user;
@@ -57,7 +72,6 @@ class AuthService with ChangeNotifier{
     }
 
   }
-
   Future<bool> signOutUser()async{
     try {
       await _auth.signOut();
@@ -67,6 +81,26 @@ class AuthService with ChangeNotifier{
       return false;
     }
   }
+  Future<bool> resetPassword(String password)async{
+    try {
+      await _auth.currentUser.updatePassword(password);
+      return true;
+    }catch(e){
+      debugPrint(e);
+      return false;
+    }
+  }
+
+  Future<bool> resetEmail(String email)async{
+    try {
+      await _auth.currentUser.updateEmail(email);
+      return true;
+    }catch(e){
+      debugPrint(e);
+      return false;
+    }
+  }
+
 
 
 
