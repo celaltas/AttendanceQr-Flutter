@@ -4,8 +4,8 @@ import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:provider/provider.dart';
+import 'services/firestore_service.dart';
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({Key key}) : super(key: key);
@@ -22,13 +22,10 @@ class _SignUpPageState extends State<SignUpPage> {
   final picker = ImagePicker();
 
 
-
-
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-
   @override
   Widget build(BuildContext context) {
     final auth = Provider.of<AuthService>(context);
+    final store = Provider.of<FireStoreService>(context);
 
 
 
@@ -44,8 +41,9 @@ class _SignUpPageState extends State<SignUpPage> {
       resizeToAvoidBottomInset: false,
       floatingActionButton: FloatingActionButton(child: Icon(Icons.create), onPressed: () async {
         if(_controlForm() == true){
-          //_createUser();
           await auth.createUserWithEmailandPassword(_eMail, _password);
+          Map map = createLocalUserMap();
+          await store.registerUserFirestore(map);
           formKey.currentState.reset();
           Navigator.pop(context);
         }
@@ -243,68 +241,21 @@ class _SignUpPageState extends State<SignUpPage> {
 
   }
 
-  /*
-
-  void _createUser() async{
-    try{
-      UserCredential _credential =  await _auth.createUserWithEmailAndPassword(email: _eMail, password: _password);
-      //_registerUserFirestore();
-      formKey.currentState.reset();
-      //Navigator.pop(context);
-    }catch(e){
-      var flushbar = Flushbar(
-        icon: Icon(Icons.check_circle),
-        flushbarPosition: FlushbarPosition.BOTTOM,
-        flushbarStyle: FlushbarStyle.GROUNDED,
-        title: "Info",
-        message:  "An error occured. Error: $e" ,
-        duration:  Duration(seconds: 2),
-      );
-      await flushbar.show(context);
-
-      debugPrint("create user hata: $e");
-    }
-
+  Map createLocalUserMap() {
+    LocalUser localUser = LocalUser(_firstName, _lastName, _eMail, _password, _userType);
+    Map localUserMap = localUser.toMap();
+    localUserMap['imagePath']=chosenImage.toString();
+    return localUserMap;
   }
 
 
 
-  void _registerUserFirestore() async{
-    try{
-      LocalUser localUser = LocalUser(_firstName, _lastName, _eMail, _password, _userType);
-      Map localUserMap = localUser.toMap();
-      localUserMap['imagePath']=chosenImage.toString();
-      _firestore.collection("users").doc().set(localUserMap).then((value){
-        var flushbar = Flushbar(
-          icon: Icon(Icons.check_circle),
-          flushbarPosition: FlushbarPosition.BOTTOM,
-          flushbarStyle: FlushbarStyle.GROUNDED,
-          title: "Info",
-          message:  "User has registered" ,
-          duration:  Duration(seconds: 2),
-        );
-        flushbar.show(context);
 
 
 
-      });
-    }catch(e){
-      var flushbar = Flushbar(
-        icon: Icon(Icons.check_circle),
-        flushbarPosition: FlushbarPosition.BOTTOM,
-        flushbarStyle: FlushbarStyle.GROUNDED,
-        title: "Info",
-        message:  "An error occured. Error: $e" ,
-        duration:  Duration(seconds: 2),
-      );
-      await flushbar.show(context);
 
-      debugPrint("register user hata: $e");
-    }
 
-    
-  }
-   */
+
 
 
 

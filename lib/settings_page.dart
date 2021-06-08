@@ -150,10 +150,8 @@ class _SettingsPageState extends State<SettingsPage> {
               if(formKeyEmail.currentState.validate()){
                 formKeyEmail.currentState.save();
                 await auth.resetEmail(_newEmail);
-                debugPrint("email değişti");
                 Navigator.pop(context);
               }
-              debugPrint("new mail" +_newEmail);
             }, child: Text("Change"), style: ElevatedButton.styleFrom(primary: Colors.green),),
             ElevatedButton(onPressed: ()=>Navigator.pop(context), child: Text("Cancel"),style: ElevatedButton.styleFrom(primary: Colors.red),),
           ],

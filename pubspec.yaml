@@ -40,6 +40,9 @@ dev_dependencies:
   image_picker: "^0.7.5+3"
   flutter_bloc: ^7.0.1
   equatable: ^0.2.6
+  qr_flutter: ^4.0.0
+  qr_code_scanner: ^0.5.1
+
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

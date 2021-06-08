@@ -4,16 +4,16 @@ class Lesson{
   int _id, _sessionCode;
   String _name;
   DateTime _createdTime;
-  LocalUser _createdBy;
+  String _createdBy;
 
   Lesson(this._sessionCode, this._name, this._createdTime, this._createdBy);
 
   Lesson.withID(this._id, this._sessionCode, this._name, this._createdTime,
       this._createdBy);
 
-  LocalUser get createdBy => _createdBy;
+  String get createdBy => _createdBy;
 
-  set createdBy(LocalUser value) {
+  set createdBy(String value) {
     _createdBy = value;
   }
 
@@ -39,6 +39,23 @@ class Lesson{
 
   set id(int value) {
     _id = value;
+  }
+
+  Map<String, dynamic> toMap(){
+    var map = Map<String, dynamic>();
+    map['id'] = _id;
+    map['sessionCode'] = _sessionCode;
+    map['name'] = _name;
+    map['createdTime'] = _createdTime;
+    map['createdBy'] = _createdBy;
+    return map;
+  }
+  Lesson.fromMap(Map<String, dynamic> map){
+    this._id =map['id'];
+    this._sessionCode =map['sessionCode'];
+    this._name =map['name'];
+    this._createdTime =map['createdTime'];
+    this._createdBy =map['createdBy'];
   }
 
   @override

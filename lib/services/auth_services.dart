@@ -15,6 +15,9 @@ class AuthService with ChangeNotifier{
 
 
 
+
+
+
   UserState get userState => _userState;
 
   set userState(UserState value) {
@@ -28,6 +31,7 @@ class AuthService with ChangeNotifier{
 
 
   Future<User> getCurrentUser()  async{
+
     try {
       User user =  _auth.currentUser;
       return user;
@@ -67,7 +71,7 @@ class AuthService with ChangeNotifier{
       return currentUser;
     }catch(e){
       userState = UserState.SessionNotCreated;
-      debugPrint(e);
+      throw Exception("An error occured: $e");
       return null;
     }
 
