@@ -3,6 +3,7 @@ import 'package:attendanceviaqr/lessons_page.dart';
 import 'package:attendanceviaqr/settings_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
 import 'services/auth_services.dart';
 import 'services/firestore_service.dart';
 

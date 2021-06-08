@@ -1,6 +1,4 @@
-import 'local_user.dart';
-
-class Lesson{
+class Lesson {
   int _id, _sessionCode;
   String _name;
   DateTime _createdTime;
@@ -41,7 +39,7 @@ class Lesson{
     _id = value;
   }
 
-  Map<String, dynamic> toMap(){
+  Map<String, dynamic> toMap() {
     var map = Map<String, dynamic>();
     map['id'] = _id;
     map['sessionCode'] = _sessionCode;
@@ -50,12 +48,13 @@ class Lesson{
     map['createdBy'] = _createdBy;
     return map;
   }
-  Lesson.fromMap(Map<String, dynamic> map){
-    this._id =map['id'];
-    this._sessionCode =map['sessionCode'];
-    this._name =map['name'];
-    this._createdTime =map['createdTime'];
-    this._createdBy =map['createdBy'];
+
+  Lesson.fromMap(Map<String, dynamic> map) {
+    this._id = map['id'];
+    this._sessionCode = map['sessionCode'];
+    this._name = map['name'];
+    this._createdTime = map['createdTime'];
+    this._createdBy = map['createdBy'];
   }
 
   @override

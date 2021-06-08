@@ -13,7 +13,6 @@ class _ScanQRState extends State<ScanQR> {
   QRViewController controller;
   final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
 
-
   @override
   void dispose() {
     controller.dispose();
@@ -32,7 +31,7 @@ class _ScanQRState extends State<ScanQR> {
   }
 
   Widget _buildQrView(BuildContext context) {
-    var scanArea = MediaQuery.of(context).size.width*0.65;
+    var scanArea = MediaQuery.of(context).size.width * 0.65;
     return QRView(
       key: qrKey,
       onQRViewCreated: _onQRViewCreated,
@@ -44,6 +43,7 @@ class _ScanQRState extends State<ScanQR> {
           cutOutSize: scanArea),
     );
   }
+
   void _onQRViewCreated(QRViewController controller) {
     setState(() {
       this.controller = controller;
@@ -51,6 +51,7 @@ class _ScanQRState extends State<ScanQR> {
     controller.scannedDataStream.listen((scanData) {
       setState(() {
         result = scanData;
+        Navigator.pop(context, result);
       });
     });
   }

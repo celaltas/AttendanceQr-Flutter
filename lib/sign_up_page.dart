@@ -1,10 +1,11 @@
+import 'dart:io';
+
 import 'package:attendanceviaqr/models/local_user.dart';
 import 'package:attendanceviaqr/services/auth_services.dart';
-import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'dart:io';
 import 'package:provider/provider.dart';
+
 import 'services/firestore_service.dart';
 
 class SignUpPage extends StatefulWidget {
@@ -43,8 +44,8 @@ class _SignUpPageState extends State<SignUpPage> {
         if(_controlForm() == true){
           await auth.createUserWithEmailandPassword(_eMail, _password);
           Map map = createLocalUserMap();
-          await store.registerUserFirestore(map);
-          formKey.currentState.reset();
+            await store.registerUserFirestore(map);
+            formKey.currentState.reset();
           Navigator.pop(context);
         }
 

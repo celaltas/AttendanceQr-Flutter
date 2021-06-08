@@ -1,6 +1,7 @@
 import 'package:attendanceviaqr/sign_up_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
 import 'landing_page.dart';
 import 'services/auth_services.dart';
 

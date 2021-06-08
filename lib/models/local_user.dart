@@ -46,27 +46,11 @@ class LocalUser {
     return map;
   }
 
-  LocalUser.fromMap(Map<String, dynamic> map){
-    this._firstName =map['_firstName'];
-    this._lastName =map['_lastName'];
-    this._eMail =map['_eMail'];
-    this._password =map['_password'];
-    this._userType =map['_userType'];
+  LocalUser.fromMap(Map<String, dynamic> map) {
+    this._firstName = map['_firstName'];
+    this._lastName = map['_lastName'];
+    this._eMail = map['_eMail'];
+    this._password = map['_password'];
+    this._userType = map['_userType'];
   }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 }

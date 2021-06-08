@@ -11,7 +11,8 @@ part 'theme_state.dart';
 class ThemeBloc extends Bloc<ThemeEvent, ThemeState> {
   ThemeBloc(ThemeState initialState) : super(initialState);
 
-    ThemeState get initialState=> ThemeInitial(theme: ThemeData.light(), color: Colors.blue);
+    ThemeState get initialState=>
+      ThemeInitial(theme: ThemeData.light(), color: Colors.blue);
 
     
     

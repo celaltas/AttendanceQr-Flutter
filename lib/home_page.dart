@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:qr_flutter/qr_flutter.dart';
+
 import 'models/lesson.dart';
+import 'scan_page.dart';
 import 'services/auth_services.dart';
 import 'services/firestore_service.dart';
 
@@ -47,9 +49,13 @@ class _HomePageState extends State<HomePage> {
                     constraints:
                         BoxConstraints.tightFor(width: 200, height: 50),
                     child: ElevatedButton(
-                        onPressed: () {
-                          //Navigator.push(context, MaterialPageRoute(builder: (context)=>ScanQR())); qr kod bilgisini al bu satırda
-                          int sessionCode = 410;
+                        onPressed: () async {
+                          final barcode = await Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => ScanQR()));
+                          final sessionCode = int.parse(barcode.code);
+
                           _getLesson(store, sessionCode).then((value) {
                             Map<String, dynamic> attendance = Map();
                             attendance['lessonName'] = value['name'];

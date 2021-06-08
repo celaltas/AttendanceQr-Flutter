@@ -30,29 +30,33 @@ class _LessonPageState extends State<LessonPage> {
                 future: getStudentLessons(store, snapshot.data['_firstName']),
                 builder: (context, snapshot) {
                   allLessons = snapshot.data;
-                  return allLessons.length != 0
-                      ? ListView.builder(
-                          itemCount: allLessons.length,
-                          itemBuilder: (context, index) {
-                            var timeStamp = allLessons[index]['date'];
-                            DateTime d = timeStamp.toDate();
+                  if (allLessons != null) {
+                    return allLessons.length != 0
+                        ? ListView.builder(
+                            itemCount: allLessons.length,
+                            itemBuilder: (context, index) {
+                              var timeStamp = allLessons[index]['date'];
+                              DateTime d = timeStamp.toDate();
 
-                            return ListTile(
-                              leading: Icon(Icons.account_circle),
-                              title: Text("Lesson: " +
-                                  allLessons[index]['lessonName'] +
-                                  " " +
-                                  allLessons[index]['lessonCode'].toString()),
-                              subtitle: Text("Date: " + d.toString()),
-                            );
-                          },
-                        )
-                      : Center(
-                          child: Text(
-                          "There are no records yet.",
-                          style: TextStyle(
-                              fontSize: 24, fontWeight: FontWeight.bold),
-                        ));
+                              return ListTile(
+                                leading: Icon(Icons.account_circle),
+                                title: Text("Lesson: " +
+                                    allLessons[index]['lessonName'] +
+                                    " " +
+                                    allLessons[index]['lessonCode'].toString()),
+                                subtitle: Text("Date: " + d.toString()),
+                              );
+                            },
+                          )
+                        : Center(
+                            child: Text(
+                            "There are no records yet.",
+                            style: TextStyle(
+                                fontSize: 24, fontWeight: FontWeight.bold),
+                          ));
+                  } else {
+                    return Center(child: CircularProgressIndicator());
+                  }
                 });
           } else {
             return FutureBuilder(
