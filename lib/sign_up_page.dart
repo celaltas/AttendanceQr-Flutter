@@ -235,6 +235,7 @@ class _SignUpPageState extends State<SignUpPage> {
       if (pickedFile != null) {
         setState(() {
           chosenImage = File(pickedFile.path);
+
         });
       }
     });

@@ -4,6 +4,7 @@ import 'package:attendanceviaqr/settings_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import 'mail.dart';
 import 'services/auth_services.dart';
 import 'services/firestore_service.dart';
 
@@ -61,26 +62,30 @@ class _LandingPageState extends State<LandingPage> {
                       UserAccountsDrawerHeader(
                         accountName: Text(snapshot.data['_firstName']),
                         accountEmail: Text(snapshot.data['_eMail']),
-                        currentAccountPicture: CircleAvatar(
-                          backgroundImage: NetworkImage(
-                            "https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500",
+                        currentAccountPicture: Container(
+                          width: 150,
+                          height: 150,
+                          decoration:BoxDecoration(
+                              borderRadius: BorderRadius.circular(150), image: DecorationImage(image:AssetImage("images/avatar.png"), fit: BoxFit.cover)
 
-                          ),
-                        ),
+                          ) ,
+                        )
                       ),
                       Divider(),
                       ListTile(leading: Icon(Icons.folder),
                           title: Text("My Files"),
                           trailing: Icon(Icons.chevron_right),
                           onTap: () {}),
-                      ListTile(leading: Icon(Icons.share),
-                          title: Text("Share"),
-                          trailing: Icon(Icons.chevron_right),
-                          onTap: () {}),
+
                       ListTile(leading: Icon(Icons.send),
                           title: Text("Send"),
                           trailing: Icon(Icons.chevron_right),
-                          onTap: () {}),
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => MailPage()));
+                          }),
                       ListTile(leading: Icon(Icons.access_time),
                           title: Text("Recent"),
                           trailing: Icon(Icons.chevron_right),

@@ -131,7 +131,10 @@ class _SignInPageState extends State<SignInPage> {
                     padding: const EdgeInsets.only(right: 16),
                     child: Image.asset("images/google-logo.png"),
                   ),
-                  onPressed: () {},
+                  onPressed: () async {
+                    await auth.signInWithGoogle();
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => LandingPage()));
+                  },
                   label: Text(
                     "Sign in with Google",
                     style: TextStyle(fontSize: 20),

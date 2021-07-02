@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 
 class ScanQR extends StatefulWidget {
@@ -13,22 +16,46 @@ class _ScanQRState extends State<ScanQR> {
   QRViewController controller;
   final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
 
+
+
+
+
+
+
+
+
   @override
-  void dispose() {
-    controller.dispose();
-    super.dispose();
+  void reassemble() {
+    super.reassemble();
+    if (Platform.isAndroid) {
+      controller.pauseCamera();
+    } else if (Platform.isIOS) {
+      controller.resumeCamera();
+    }
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Container(
-      child: Column(
-        children: [
-          Expanded(flex: 4, child: _buildQrView(context)),
-        ],
-      ),
-    );
-  }
+  Widget build(BuildContext context) =>SafeArea(
+      child: Scaffold(
+        body: Stack(
+          alignment: Alignment.center,
+          children: [
+            _buildQrView(context),
+            Positioned(child: Container(
+              padding: EdgeInsets.all(12),
+              child: Text(result !=null ? "Successfully!":"Scan barcode!"),
+              decoration: BoxDecoration(borderRadius: BorderRadius.circular(8), color: Colors.white),
+            ), bottom: 20,)
+
+          ],
+        ),
+      ));
+
+
+
+
+
+
 
   Widget _buildQrView(BuildContext context) {
     var scanArea = MediaQuery.of(context).size.width * 0.65;
@@ -45,14 +72,39 @@ class _ScanQRState extends State<ScanQR> {
   }
 
   void _onQRViewCreated(QRViewController controller) {
-    setState(() {
-      this.controller = controller;
-    });
-    controller.scannedDataStream.listen((scanData) {
+
+      bool scanned = false;
       setState(() {
-        result = scanData;
-        Navigator.pop(context, result);
+        this.controller = controller;
       });
+
+
+    controller.scannedDataStream.listen((scanData) {
+      if(!scanned){
+        scanned=true;
+          setState(() {
+            result = scanData;
+            this.controller.pauseCamera();
+            Navigator.pop(context, result);
+          });
+
+      }
+     /* WidgetsBinding.instance.addPostFrameCallback((_) {
+        Navigator.pop(context, result);
+
+
+      });*/
+
+
+
     });
   }
+
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
+  }
+
+
 }

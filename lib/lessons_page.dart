@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'lesson_detail.dart';
 import 'services/auth_services.dart';
 import 'services/firestore_service.dart';
+import 'weekly_calendar.dart';
 
 class LessonPage extends StatefulWidget {
   const LessonPage({Key key}) : super(key: key);
@@ -15,6 +15,31 @@ class LessonPage extends StatefulWidget {
 class _LessonPageState extends State<LessonPage> {
   List<Map> allLessons;
   bool studentMode = true;
+  DateTime datetime;
+  List<TileData> tileData;
+  List<TileData> tumVeriler;
+
+  @override
+  void initState() {
+    tumVeriler = [
+      TileData("Math300", false, [
+        {"date": "19-05-21", "status": true},
+        {"date": "19-05-21", "status": true},
+        {"date": "19-05-21", "status": true}
+      ]),
+      TileData("Art200", false, [
+        {"date": "12-05-21", "status": true},
+        {"date": "19-05-21", "status": true},
+        {"date": "19-05-21", "status": true}
+      ]),
+      TileData("Programming100", false, [
+        {"date": "23-05-21", "status": true},
+        {"date": "19-05-21", "status": true},
+        {"date": "19-05-21", "status": true}
+      ]),
+    ];
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,41 +51,72 @@ class _LessonPageState extends State<LessonPage> {
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           if (snapshot.data['_userType'] == "Student") {
+            String name = snapshot.data['_firstName'];
             return FutureBuilder(
-                future: getStudentLessons(store, snapshot.data['_firstName']),
+                future: getStudentLessons(store, name),
                 builder: (context, snapshot) {
-                  allLessons = snapshot.data;
-                  if (allLessons != null) {
-                    return allLessons.length != 0
-                        ? ListView.builder(
-                            itemCount: allLessons.length,
-                            itemBuilder: (context, index) {
-                              var timeStamp = allLessons[index]['date'];
-                              DateTime d = timeStamp.toDate();
-
-                              return ListTile(
-                                leading: Icon(Icons.account_circle),
-                                title: Text("Lesson: " +
-                                    allLessons[index]['lessonName'] +
-                                    " " +
-                                    allLessons[index]['lessonCode'].toString()),
-                                subtitle: Text("Date: " + d.toString()),
-                              );
-                            },
-                          )
-                        : Center(
-                            child: Text(
-                            "There are no records yet.",
-                            style: TextStyle(
-                                fontSize: 24, fontWeight: FontWeight.bold),
-                          ));
+                  if (snapshot.hasData) {
+                    tileData = getTileData(snapshot.data);
+                    if (tileData != null) {
+                      return ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: tileData.length,
+                        itemBuilder: (context, index) {
+                          List attendances = tileData[index].attendances;
+                          return ExpansionTile(
+                            title: Text(tileData[index].title),
+                            initiallyExpanded: false,
+                            children: [
+                              ListView.builder(
+                                  shrinkWrap: true,
+                                  itemCount: attendances.length,
+                                  itemBuilder: (context, index) {
+                                    return ListTile(
+                                      leading: CircleAvatar(
+                                        child: Text((index + 1).toString()),
+                                        backgroundColor: Colors.blue,
+                                      ),
+                                      title: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        children: [
+                                          SizedBox(height: 15),
+                                          Text(attendances[index]['status'] ==
+                                                  true
+                                              ? "Exist"
+                                              : "Absentee"),
+                                          Text("Week ${index + 1}"),
+                                          attendances[index]['date'] != null
+                                              ? Text("Date: " +
+                                                  attendances[index]['date']
+                                                      .toDate()
+                                                      .toString())
+                                              : Text(""),
+                                          SizedBox(height: 15),
+                                        ],
+                                      ),
+                                    );
+                                  })
+                            ],
+                          );
+                        },
+                      );
+                    } else {
+                      return Center(
+                          child: Text(
+                        "There are no records yet.",
+                        style: TextStyle(
+                            fontSize: 24, fontWeight: FontWeight.bold),
+                      ));
+                    }
                   } else {
                     return Center(child: CircularProgressIndicator());
                   }
                 });
           } else {
+            String name = snapshot.data['_firstName'];
             return FutureBuilder(
-              future: getLessons(store),
+              future: getLessons(store, name),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   allLessons = snapshot.data;
@@ -75,7 +131,7 @@ class _LessonPageState extends State<LessonPage> {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => LessonDetail(
+                                  builder: (context) => WeeklyCalendar(
                                         name: allLessons[index]['name'],
                                         sessionCode: allLessons[index]
                                             ['sessionCode'],
@@ -157,7 +213,8 @@ class _LessonPageState extends State<LessonPage> {
                     },
                   );
                 } else {
-                  return Center(child: CircularProgressIndicator());
+                  //return Center(child: CircularProgressIndicator());
+                  return Center();
                 }
               },
             );
@@ -169,8 +226,8 @@ class _LessonPageState extends State<LessonPage> {
     );
   }
 
-  Future<List<Map>> getLessons(FireStoreService store) async {
-    var lessons = await store.fetchLessons();
+  Future<List<Map>> getLessons(FireStoreService store, String name) async {
+    var lessons = await store.fetchLessons(name);
     return lessons;
   }
 
@@ -182,8 +239,29 @@ class _LessonPageState extends State<LessonPage> {
     return userMap;
   }
 
-  getStudentLessons(FireStoreService store, data) async {
-    var lessons = await store.fetchStudentLessons(data);
+  List<TileData> getTileData(datas) {
+    final List<TileData> tileData = [];
+
+    for (var data in datas) {
+      data.forEach((k, v) {
+        tileData.add(TileData(k, false, v));
+      });
+    }
+    return tileData;
+  }
+
+  Future<List<Map<dynamic, dynamic>>> getStudentLessons(
+      FireStoreService store, data) async {
+    List<Map<dynamic, dynamic>> lessons = [];
+    lessons = await store.fetchStudentLessons(data);
     return lessons;
   }
+}
+
+class TileData {
+  String title;
+  bool expanded;
+  List attendances;
+
+  TileData(this.title, this.expanded, this.attendances);
 }
